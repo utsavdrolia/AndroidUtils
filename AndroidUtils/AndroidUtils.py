@@ -20,7 +20,7 @@ def connect_all(devs):
 
 def get_available_devices(subnet, num_devs):
     devs = []
-    subnet = ".".join(subnet.split(".")[0:2])
+    subnet = ".".join(subnet.split(".")[:-1])
     for last in range(1, 255):
         dev = subnet + "." + str(last)
         reply = connect(dev).split()

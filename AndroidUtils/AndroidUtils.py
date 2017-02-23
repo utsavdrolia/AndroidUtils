@@ -3,7 +3,7 @@ from time import sleep
 
 
 def run_command(command):
-    print " ".join(command)
+    print "Running:" + " ".join(command)
     return subprocess.check_output(command)
 
 

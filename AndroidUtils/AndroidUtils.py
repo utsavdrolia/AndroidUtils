@@ -8,13 +8,30 @@ def run_command(command):
 
 
 def connect(dev):
+    """
+    Connects to given device (IP address)
+    :param dev: IP address of device
+    :return: "<IPaddress>:<port>" if connected, None otherwise
+    """
     command = ["adb", "connect", dev]
-    return run_command(command)
+    reply = run_command(command).split()
+    if reply[0] == "connected":
+        return reply[2]
+    elif reply[0] == "already":
+        return reply[3]
+    return None
 
 
 def connect_all(devs):
+    """
+    Connects to all devices.
+    Also see :func: connect
+    :param devs:
+    :return:
+    """
+    connected = []
     for dev in devs:
-        connect(dev)
+        connected.append(connect(dev))
         sleep(5)
 
 
@@ -23,9 +40,9 @@ def get_available_devices(subnet, num_devs):
     subnet = ".".join(subnet.split(".")[:-1])
     for last in range(1, 255):
         dev = subnet + "." + str(last)
-        reply = connect(dev).split()
-        if reply[0] == "connected":
-            devs.append(reply[2])
+        reply = connect(dev)
+        if reply is not None:
+            devs.append(reply)
             if len(devs) == num_devs:
                 return devs
     return devs

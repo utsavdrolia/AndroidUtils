@@ -4,6 +4,13 @@ import itertools
 
 
 def all(func, devs, *args):
+    """
+    Apply function and args to all devices
+    :param func:
+    :param devs:
+    :param args:
+    :return:
+    """
     repeated_args = []
     for arg in args:
         repeated_args.append(itertools.repeat(arg, len(devs)))
@@ -23,25 +30,12 @@ def connect(dev):
     """
     command = ["adb", "connect", dev]
     reply = run_command(command).split()
+    sleep(1)
     if reply[0] == "connected":
         return reply[2]
     elif reply[0] == "already":
         return reply[3]
     return None
-
-
-def connect_all(devs):
-    """
-    Connects to all devices.
-    Also see :func: connect
-    :param devs:
-    :return:
-    """
-    connected = []
-    for dev in devs:
-        connected.append(connect(dev))
-        sleep(5)
-    return connected
 
 
 def get_available_devices(subnet, num_devs):
@@ -59,37 +53,32 @@ def get_available_devices(subnet, num_devs):
 
 def disconnect():
     command = ["adb", "disconnect"]
-    run_command(command)
+    return run_command(command)
 
 
 def kill_server():
     command = ["adb", "kill-server"]
-    run_command(command)
+    return run_command(command)
 
 
 def start_server():
     command =["adb", "start-server"]
-    run_command(command)
+    return run_command(command)
 
 
 def send_file(dev, local, remote):
     command = ["adb", "-s", dev, "wait-for-device", "push", local, remote]
-    run_command(command)
+    return run_command(command)
 
 
 def get_file(dev, remote, local):
     command = ["adb", "-s", dev, "wait-for-device", "pull", remote, local]
-    run_command(command)
+    return run_command(command)
 
 
 def rm(remote, dev):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "rm", remote]
-    run_command(command)
-
-
-def get_files(remote, local, devs):
-    for dev in devs:
-        get_file(remote, local+dev, dev)
+    return run_command(command)
 
 
 def mkdir(dev, dir):
@@ -97,39 +86,20 @@ def mkdir(dev, dir):
     return run_command(command)
 
 
-def mkdir_all(devs, dir):
-    return map(mkdir, devs, itertools.repeat(dir, len(devs)))
-
-
-def stopApp(dev, app):
+def kill_app(dev, app):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "force-stop", app]
-    run_command(command)
+    return run_command(command)
 
 
-def launchApp(dev, app):
+def launch_app(dev, app):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "start", "-a", "android.intent.action.MAIN", "-n", app]
-    run_command(command)
+    return run_command(command)
 
 
 def send_intent(dev, intent):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "broadcast", "-a"]
     command.extend(intent)
-    run_command(command)
-
-
-def send_intent_to_all(devs, intent):
-    for dev in devs:
-        send_intent(dev, intent)
-
-
-def launchAppOnAll(devs, app):
-    for dev in devs:
-        launchApp(dev, app)
-
-
-def killAppOnAll(devs, app):
-    for dev in devs:
-        stopApp(dev, app)
+    return run_command(command)
 
 
 def trepn_profiler_launch(dev):
@@ -138,49 +108,35 @@ def trepn_profiler_launch(dev):
     sleep(1)
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "broadcast", "-a", "com.quicinc.trepn.load_preferences",
                "-e", "com.quicinc.trepn.load_preferences_file", "/sdcard/trepn/saved_preferences/pref.pref"]
-    run_command(command)
+    res = run_command(command)
     sleep(1)
-
-
-def trepn_launch_all(devs):
-    for dev in devs:
-        trepn_profiler_launch(dev)
+    return res
 
 
 def trepn_start_profiling(dev):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "broadcast", "-a", "com.quicinc.trepn.start_profiling",
                "-e", "com.quicinc.trepn.database_file", "log"]
-    run_command(command)
-
-
-def trepn_start_profiling_all(devs):
-    for dev in devs:
-        trepn_start_profiling(dev)
+    res = run_command(command)
+    sleep(1)
+    return res
 
 
 def trepn_stop_profiling(dev):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "broadcast", "-a", "com.quicinc.trepn.stop_profiling"]
-    run_command(command)
-
-
-def trepn_stop_profiling_all(devs):
-    for dev in devs:
-        trepn_stop_profiling(dev)
+    res = run_command(command)
+    sleep(1)
+    return res
 
 
 def trepn_read_logs(dev, log):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "broadcast", "-a", "com.quicinc.trepn.export_to_csv", "-e",
                "com.quicinc.trepn.export_db_input_file", "log", "-e", "com.quicinc.trepn.export_csv_output_file", "out.csv"]
-    run_command(command)
+    res = run_command(command)
     sleep(5)
     get_file("/sdcard/trepn/out.csv", log, dev)
     rm("/sdcard/trepn/out.csv", dev)
     rm("/sdcard/trepn/log.db", dev)
-
-
-def trepn_read_logs_all(devs, logdir):
-    for dev in devs:
-        trepn_read_logs(dev, logdir + dev)
+    return res
 
 
 def USBPowerOff():

@@ -139,6 +139,11 @@ def trepn_read_logs(dev, log):
     return res
 
 
+def reboot(dev):
+    command = ["adb", "-s", dev, "reboot"]
+    return run_command(command
+                       )
+
 def USBPowerOff():
     subprocess.call("/home/utsav/Research/Hyrax/AndroidScripts/USBpowerOff.sh")
 

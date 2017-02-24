@@ -1,6 +1,10 @@
 import subprocess
 from time import sleep
 
+import functools
+
+import itertools
+
 
 def run_command(command):
     print "Running:" + " ".join(command)
@@ -86,7 +90,11 @@ def get_files(remote, local, devs):
 
 def mkdir(dev, dir):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "mkdir -p", dir]
-    run_command(command)
+    return run_command(command)
+
+
+def mkdir_all(devs, dir):
+    return map(mkdir, devs, itertools.repeat(dir, len(devs)))
 
 
 def stopApp(dev, app):

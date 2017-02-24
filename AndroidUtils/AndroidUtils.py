@@ -1,9 +1,13 @@
 import subprocess
 from time import sleep
-
-import functools
-
 import itertools
+
+
+def all(func, devs, *args):
+    repeated_args = []
+    for arg in args:
+        repeated_args.append(itertools.repeat(arg, len(devs)))
+    return map(func, devs, *repeated_args)
 
 
 def run_command(command):
@@ -68,12 +72,12 @@ def start_server():
     run_command(command)
 
 
-def send_file(local, remote, dev):
+def send_file(dev, local, remote):
     command = ["adb", "-s", dev, "wait-for-device", "push", local, remote]
     run_command(command)
 
 
-def get_file(remote, local, dev):
+def get_file(dev, remote, local):
     command = ["adb", "-s", dev, "wait-for-device", "pull", remote, local]
     run_command(command)
 

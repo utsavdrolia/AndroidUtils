@@ -33,6 +33,7 @@ def connect_all(devs):
     for dev in devs:
         connected.append(connect(dev))
         sleep(5)
+    return connected
 
 
 def get_available_devices(subnet, num_devs):

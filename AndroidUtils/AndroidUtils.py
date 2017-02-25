@@ -73,7 +73,11 @@ def send_file(dev, local, remote):
 
 def get_file(dev, remote, local):
     command = ["adb", "-s", dev, "wait-for-device", "pull", remote, local]
-    return run_command(command)
+    try:
+        ret = run_command(command)
+        return ret
+    except subprocess.CalledProcessError:
+        return
 
 
 def rm(remote, dev):
@@ -141,8 +145,8 @@ def trepn_read_logs(dev, log):
 
 def reboot(dev):
     command = ["adb", "-s", dev, "reboot"]
-    return run_command(command
-                       )
+    return run_command(command)
+
 
 def USBPowerOff():
     subprocess.call("/home/utsav/Research/Hyrax/AndroidScripts/USBpowerOff.sh")

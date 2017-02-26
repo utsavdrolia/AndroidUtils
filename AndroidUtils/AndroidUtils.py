@@ -117,6 +117,11 @@ def trepn_profiler_launch(dev):
     return res
 
 
+def trepn_profiler_kill(dev):
+    command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "stopservice", "com.quicinc.trepn/.TrepnService"]
+    return run_command(command)
+
+
 def trepn_start_profiling(dev):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "broadcast", "-a", "com.quicinc.trepn.start_profiling",
                "-e", "com.quicinc.trepn.database_file", "log"]

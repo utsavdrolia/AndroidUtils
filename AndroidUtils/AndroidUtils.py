@@ -153,6 +153,16 @@ def reboot(dev):
     return run_command(command)
 
 
+def dumpsys_battery(dev):
+    command = ["adb", "-s", dev, "wait-for-device", "shell", "dumpsys", "batterystats", "--checkin"]
+    return run_command(command)
+
+
+def dumpsys_reset(dev):
+    command = ["adb", "-s", dev, "wait-for-device", "shell", "dumpsys", "batterystats", "--reset"]
+    return run_command(command)
+
+
 def USBPowerOff():
     subprocess.call("/home/utsav/Research/Hyrax/AndroidScripts/USBpowerOff.sh")
 

@@ -196,4 +196,4 @@ def get_netstats_uid(dev, uid):
             rx_bytes += int(chunks[5])
             tx_bytes += int(chunks[7])
 
-    return rx_bytes, tx_bytes
+    return {"rx": rx_bytes, "tx": tx_bytes}

@@ -186,14 +186,14 @@ def get_uid(dev, package_name):
 def get_netstats_uid(dev, uid):
     out = get_netstats(dev)
     out = out.splitlines()
-    rx_bytes = 0
-    tx_bytes = 0
+    rx_bytes = 0l
+    tx_bytes = 0l
     for line in out:
         line = line.strip()
         chunks = line.split()
         userid = chunks[3]
         if userid == uid:
-            rx_bytes += int(chunks[5])
-            tx_bytes += int(chunks[7])
+            rx_bytes += long(chunks[5])
+            tx_bytes += long(chunks[7])
 
     return {"rx": rx_bytes, "tx": tx_bytes}

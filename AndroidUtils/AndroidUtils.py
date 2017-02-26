@@ -106,12 +106,12 @@ def send_intent(dev, intent):
     return run_command(command)
 
 
-def trepn_profiler_launch(dev):
+def trepn_profiler_launch(dev, preference_name):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "startservice", "com.quicinc.trepn/.TrepnService"]
     run_command(command)
     sleep(1)
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "broadcast", "-a", "com.quicinc.trepn.load_preferences",
-               "-e", "com.quicinc.trepn.load_preferences_file", "/sdcard/trepn/saved_preferences/pref_all.pref"]
+               "-e", "com.quicinc.trepn.load_preferences_file", "/sdcard/trepn/saved_preferences/" + preference_name]
     res = run_command(command)
     sleep(1)
     return res
@@ -161,11 +161,3 @@ def dumpsys_battery(dev):
 def dumpsys_reset(dev):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "dumpsys", "batterystats", "--reset"]
     return run_command(command)
-
-
-def USBPowerOff():
-    subprocess.call("/home/utsav/Research/Hyrax/AndroidScripts/USBpowerOff.sh")
-
-
-def USBPowerOn():
-    subprocess.call("/home/utsav/Research/Hyrax/AndroidScripts/USBpowerOn.sh")

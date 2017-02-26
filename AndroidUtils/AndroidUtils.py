@@ -80,7 +80,7 @@ def get_file(dev, remote, local):
         return
 
 
-def rm(remote, dev):
+def rm(dev, remote):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "rm", remote]
     return run_command(command)
 

@@ -137,9 +137,9 @@ def trepn_read_logs(dev, log):
                "com.quicinc.trepn.export_db_input_file", "log", "-e", "com.quicinc.trepn.export_csv_output_file", "out.csv"]
     res = run_command(command)
     sleep(5)
-    get_file("/sdcard/trepn/out.csv", log, dev)
-    rm("/sdcard/trepn/out.csv", dev)
-    rm("/sdcard/trepn/log.db", dev)
+    get_file(dev, "/sdcard/trepn/out.csv", log)
+    rm(dev, "/sdcard/trepn/out.csv")
+    rm(dev, "/sdcard/trepn/log.db")
     return res
 
 

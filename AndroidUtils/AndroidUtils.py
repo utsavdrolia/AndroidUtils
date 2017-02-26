@@ -173,6 +173,7 @@ def get_uid(dev, package_name):
     out = run_command(command)
     out = out.splitlines()
     for line in out:
+        line = line.strip()
         if line.startswith("userId"):
             chunks = line.split()
             for chunk in chunks:
@@ -188,6 +189,7 @@ def get_netstats_uid(dev, uid):
     rx_bytes = 0
     tx_bytes = 0
     for line in out:
+        line = line.strip()
         chunks = line.split()
         userid = chunks[3]
         if userid == uid:

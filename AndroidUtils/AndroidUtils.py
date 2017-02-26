@@ -161,3 +161,37 @@ def dumpsys_battery(dev):
 def dumpsys_reset(dev):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "dumpsys", "batterystats", "--reset"]
     return run_command(command)
+
+
+def get_netstats(dev):
+    command = ["adb", "-s", dev, "wait-for-device", "shell", "cat", "/proc/net/xt_qtaguid/stats"]
+    return run_command(command)
+
+
+def get_uid(dev, package_name):
+    command = ["adb", "-s", dev, "wait-for-device", "shell", "dumpsys", "package", package_name]
+    out = run_command(command)
+    out = out.splitlines()
+    for line in out:
+        if line.startswith("userId"):
+            chunks = line.split()
+            for chunk in chunks:
+                if chunk.startswith("userId"):
+                    _ , userid = chunk.split("=")
+                    return userid
+    return None
+
+
+def get_netstats_uid(dev, uid):
+    out = get_netstats(dev)
+    out = out.splitlines()
+    rx_bytes = 0
+    tx_bytes = 0
+    for line in out:
+        chunks = line.split()
+        userid = chunks[3]
+        if userid == uid:
+            rx_bytes += int(chunks[5])
+            tx_bytes += int(chunks[7])
+
+    return rx_bytes, tx_bytes

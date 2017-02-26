@@ -111,7 +111,7 @@ def trepn_profiler_launch(dev):
     run_command(command)
     sleep(1)
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "broadcast", "-a", "com.quicinc.trepn.load_preferences",
-               "-e", "com.quicinc.trepn.load_preferences_file", "/sdcard/trepn/saved_preferences/pref.pref"]
+               "-e", "com.quicinc.trepn.load_preferences_file", "/sdcard/trepn/saved_preferences/pref_all.pref"]
     res = run_command(command)
     sleep(1)
     return res

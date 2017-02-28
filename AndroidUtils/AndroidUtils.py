@@ -170,12 +170,12 @@ def trepn_get_logs(dev, log):
 
     # check if fully exported
     while True:
-        logger.info("Exporting...")
-        ret = run_command(["adb", "-s", dev, "wait-for-device", "shell", "lsof"])
-        if ret.find("trepn/out.csv") == -1:
+        logger.info("!!Exporting...!!")
+        ret = run_command(["adb", "-s", dev, "wait-for-device", "shell", "ls /sdcard/trepn/log.db-shm"])
+        if ret.find("No such") != -1:
             logger.info("File exported")
             break
-        sleep(1)
+        sleep(5)
 
     get_file(dev, "/sdcard/trepn/out.csv", log)
     rm(dev, "/sdcard/trepn/out.csv")

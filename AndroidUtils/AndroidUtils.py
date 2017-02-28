@@ -187,6 +187,13 @@ def reboot(dev):
     return run_command(command)
 
 
+def wake_up(dev):
+    command = ["adb", "-s", dev, "shell", "input", "keyevent", "26"]
+    run_command(command)
+    run_command(command)
+    return
+
+
 def dumpsys_battery(dev):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "dumpsys", "batterystats", "--checkin"]
     return run_command(command)

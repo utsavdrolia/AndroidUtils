@@ -1,6 +1,38 @@
+import os
 import subprocess
+import traceback
 from time import sleep
 import itertools
+
+# setup logs
+# create logger
+import logging
+import logging.handlers
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# Create temp director
+if not os.path.exists("/tmp/AndroiUtils"):
+    os.makedirs("/tmp/AndroiUtils")
+
+# create console handler and set level to debug
+ch = logging.handlers.RotatingFileHandler("/tmp/AndroiUtils/log", maxBytes=10 * 1024, backupCount=10)
+ch.setLevel(logging.DEBUG)
+
+# create formatter
+formatter = logging.Formatter(fmt='[%name][%(levelname)s]%(asctime)s %(message)s', datefmt='%Y/%m/%d-%H:%M:%S')
+
+# add formatter to ch
+ch.setFormatter(formatter)
+
+# add ch to logger
+logger.addHandler(ch)
+
+stream = logging.StreamHandler(stream=sys.stdout)
+stream.setLevel(logging.DEBUG)
+stream.setFormatter(formatter)
+logger.addHandler(stream)
 
 
 def all(func, devs, *args):
@@ -18,8 +50,12 @@ def all(func, devs, *args):
 
 
 def run_command(command):
-    print "Running:" + " ".join(command)
-    return subprocess.check_output(command)
+    logger.info("Running:" + " ".join(command))
+    try:
+        return subprocess.check_output(command)
+    except subprocess.CalledProcessError:
+        logger.error(traceback.format_exc())
+        return
 
 
 def connect(dev):
@@ -73,11 +109,8 @@ def send_file(dev, local, remote):
 
 def get_file(dev, remote, local):
     command = ["adb", "-s", dev, "wait-for-device", "pull", remote, local]
-    try:
-        ret = run_command(command)
-        return ret
-    except subprocess.CalledProcessError:
-        return
+    ret = run_command(command)
+    return ret
 
 
 def rm(dev, remote):
@@ -137,15 +170,37 @@ def trepn_stop_profiling(dev):
     return res
 
 
-def trepn_read_logs(dev, log):
+def trepn_export_logs(dev):
+    """
+    Start exporting the logs
+    :param dev:
+    :return:
+    """
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "broadcast", "-a", "com.quicinc.trepn.export_to_csv", "-e",
                "com.quicinc.trepn.export_db_input_file", "log", "-e", "com.quicinc.trepn.export_csv_output_file", "out.csv"]
     res = run_command(command)
-    sleep(5)
+    return res
+
+
+def trepn_get_logs(dev, log):
+    """
+    Get the exported logs
+    :param dev:
+    :param log:
+    :return:
+    """
+    # check if fully exported
+    while True:
+        ret = run_command(["adb", "-s", dev, "wait-for-device", "shell", "lsof", "|", "grep", "trepn/out.csv"])
+
+        if len(ret) == 0 or ret.find("out.csv") == -1:
+            break
+        logger.info("Exporting...")
+        sleep(1)
+
     get_file(dev, "/sdcard/trepn/out.csv", log)
     rm(dev, "/sdcard/trepn/out.csv")
     rm(dev, "/sdcard/trepn/log.db")
-    return res
 
 
 def reboot(dev):

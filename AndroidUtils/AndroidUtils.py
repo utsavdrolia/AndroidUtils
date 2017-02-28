@@ -161,13 +161,20 @@ def trepn_get_logs(dev, log):
     :param log:
     :return:
     """
+    # check if file exists
+    while True:
+        ret = run_command(["adb", "-s", dev, "wait-for-device", "shell", "ls /sdcard/trepn/out.csv"])
+        if ret.find("No such") == -1:
+            logger.info("Exported file found")
+            break
+
     # check if fully exported
     while True:
-        ret = run_command(["adb", "-s", dev, "wait-for-device", "shell", "lsof", "|", "grep", "trepn/out.csv"])
-
-        if len(ret) == 0 or ret.find("out.csv") == -1:
-            break
         logger.info("Exporting...")
+        ret = run_command(["adb", "-s", dev, "wait-for-device", "shell", "lsof"])
+        if ret.find("trepn/out.csv") == -1:
+            logger.info("File exported")
+            break
         sleep(1)
 
     get_file(dev, "/sdcard/trepn/out.csv", log)

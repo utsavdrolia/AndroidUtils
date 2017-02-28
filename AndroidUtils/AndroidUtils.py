@@ -5,6 +5,7 @@ import itertools
 import logging
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def all(func, devs, *args):
@@ -79,9 +80,9 @@ def get_file(dev, remote, local):
     command = ["adb", "-s", dev, "wait-for-device", "pull", remote, local]
     try:
         ret = run_command(command)
+        return ret
     except subprocess.CalledProcessError:
-        return
-    return ret
+        logger.warning(remote + " : File not found")
 
 
 def rm(dev, remote):

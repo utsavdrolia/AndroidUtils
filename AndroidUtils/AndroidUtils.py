@@ -31,11 +31,6 @@ ch.setFormatter(formatter)
 # add ch to logger
 logger.addHandler(ch)
 
-stream = logging.StreamHandler(stream=sys.stdout)
-stream.setLevel(logging.DEBUG)
-stream.setFormatter(formatter)
-logger.addHandler(stream)
-
 
 def all(func, devs, *args):
     """
@@ -53,11 +48,7 @@ def all(func, devs, *args):
 
 def run_command(command):
     logger.info("Running:" + " ".join(command))
-    try:
-        return subprocess.check_output(command)
-    except subprocess.CalledProcessError:
-        logger.error(traceback.format_exc())
-        return
+    return subprocess.check_output(command)
 
 
 def connect(dev):
@@ -111,7 +102,10 @@ def send_file(dev, local, remote):
 
 def get_file(dev, remote, local):
     command = ["adb", "-s", dev, "wait-for-device", "pull", remote, local]
-    ret = run_command(command)
+    try:
+        ret = run_command(command)
+    except subprocess.CalledProcessError:
+        return
     return ret
 
 

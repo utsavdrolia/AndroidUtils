@@ -1,35 +1,10 @@
-import os
 import subprocess
-import traceback
 from time import sleep
 import itertools
 
-# setup logs
-# create logger
 import logging
-import logging.handlers
-
-import sys
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# Create temp director
-if not os.path.exists("/tmp/AndroiUtils"):
-    os.makedirs("/tmp/AndroiUtils")
-
-# create console handler and set level to debug
-ch = logging.handlers.RotatingFileHandler("/tmp/AndroiUtils/log", maxBytes=10 * 1024, backupCount=10)
-ch.setLevel(logging.DEBUG)
-
-# create formatter
-formatter = logging.Formatter(fmt='[%(name)s][%(levelname)s]%(asctime)s %(message)s', datefmt='%Y/%m/%d-%H:%M:%S')
-
-# add formatter to ch
-ch.setFormatter(formatter)
-
-# add ch to logger
-logger.addHandler(ch)
 
 
 def all(func, devs, *args):

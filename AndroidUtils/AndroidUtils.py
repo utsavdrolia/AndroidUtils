@@ -23,7 +23,7 @@ ch = logging.handlers.RotatingFileHandler("/tmp/AndroiUtils/log", maxBytes=10 * 
 ch.setLevel(logging.DEBUG)
 
 # create formatter
-formatter = logging.Formatter(fmt='[%(name)][%(levelname)s]%(asctime)s %(message)s', datefmt='%Y/%m/%d-%H:%M:%S')
+formatter = logging.Formatter(fmt='[%(name)s][%(levelname)s]%(asctime)s %(message)s', datefmt='%Y/%m/%d-%H:%M:%S')
 
 # add formatter to ch
 ch.setFormatter(formatter)

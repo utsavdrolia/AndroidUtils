@@ -95,6 +95,11 @@ def mkdir(dev, dir):
     return run_command(command)
 
 
+def install(dev, app_location):
+    command = ["adb", "-s", dev, "wait-for-device", "shell", "pm", "install", "-r", app_location]
+    return run_command(command)
+
+
 def kill_app(dev, app):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "force-stop", app]
     return run_command(command)
@@ -128,6 +133,8 @@ def trepn_profiler_kill(dev):
 
 
 def trepn_start_profiling(dev):
+    rm(dev, "/sdcard/trepn/out.csv")
+    rm(dev, "/sdcard/trepn/log.db")
     command = ["adb", "-s", dev, "wait-for-device", "shell", "am", "broadcast", "-a", "com.quicinc.trepn.start_profiling",
                "-e", "com.quicinc.trepn.database_file", "log"]
     res = run_command(command)

@@ -76,6 +76,11 @@ def send_file(dev, local, remote):
     return run_command(command)
 
 
+def sync_file(dev, local, remote):
+    command = ["adb", "-s", dev, "wait-for-device", "push", local, remote]
+    return run_command(command)
+
+
 def get_file(dev, remote, local):
     command = ["adb", "-s", dev, "wait-for-device", "pull", remote, local]
     try:

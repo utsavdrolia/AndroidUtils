@@ -216,6 +216,20 @@ def dumpsys_reset(dev):
     return run_command(command)
 
 
+def get_battery_percent(dev):
+    command = ["adb", "-s", dev, "wait-for-device", "shell", "dumpsys", "battery"]
+    lines = run_command(command)
+    lines = lines.splitlines()
+    for line in lines:
+        line = line.strip()
+        if line.startswith("level"):
+            perc_splits = line.split(" ")
+            perc = perc_splits[1]
+            return int(perc)
+    logger.debug("Couldn't find Battery Percentage")
+    return None
+
+
 def get_netstats(dev):
     command = ["adb", "-s", dev, "wait-for-device", "shell", "cat", "/proc/net/xt_qtaguid/stats"]
     return run_command(command)
